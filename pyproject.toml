@@ -1,0 +1,63 @@
+[project]
+name = "talk-to-research-core"
+version = "0.0.1"
+description = "Ядро MVP: ответы по договорам и праву РБ со ссылками и проверкой цитат"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # API ядра и интерфейс (M9)
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    # клиент модели через OpenAI-совместимый API (M1, M7, M8)
+    "openai>=1.50",
+    "httpx>=0.27",
+    # индекс: векторы в SQLite (M5)
+    "sqlite-vec>=0.1.6",
+    # лемматизация русского для поиска по словам (M5, decisions/020)
+    "pymorphy3>=2.0",
+    "pymorphy3-dicts-ru>=2.4",
+    # скачивание и разбор актов с pravo.by (M4)
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    # эталоны проверочного набора (M3, M6, M8)
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "types-pyyaml",
+]
+# Тяжёлые пакеты: разбор документов, эмбеддинги и reranker на машине
+# разработчика. В песочницу Factory не ставятся (decisions/028).
+heavy = [
+    "docling>=2.0",
+    "sentence-transformers>=3.0",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["core", "cli"]
+
+[[tool.mypy.overrides]]
+module = ["sqlite_vec", "pymorphy3"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "mac: нужен Mac (MLX, Metal)",
+    "model: нужна настоящая модель (Ollama, bge-m3, reranker)",
+]

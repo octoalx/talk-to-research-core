@@ -1,0 +1,18 @@
+# Настройки ядра. Любое значение можно переопределить переменной
+# окружения TTR_<РАЗДЕЛ>_<КЛЮЧ>, например TTR_LLM_MODEL=gemma4:12b.
+
+[paths]
+data_dir = "data"
+
+[llm]
+# OpenAI-совместимый сервер (Ollama по умолчанию, decisions/003)
+base_url = "http://localhost:11434/v1"
+model = "qwen3.5:9b"
+context_tokens = 8192
+
+[embed]
+model = "bge-m3"
+dim = 1024
+
+[search]
+top_k = 8
