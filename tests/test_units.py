@@ -168,3 +168,9 @@ def test_cli_units(capsys) -> None:  # type: ignore[no-untyped-def]
     assert len(lines) == 17
     assert any(line.startswith("  6.2 Если ни одна из сторон") for line in lines)
     assert any(line.startswith("6 Срок действия") for line in lines)
+
+
+def test_nested_markdown_heading_inside_section() -> None:
+    doc = split_units("## 2. Общее\n### 2.3. Порядок\n2.3.1. Подпункт\n")
+    u = {x.number: x for x in doc.units}
+    assert (u["2.3"].label, u["2.3"].parent, u["2.3.1"].parent) == ("раздел", u["2"].id, u["2.3"].id)
